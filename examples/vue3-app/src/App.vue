@@ -3,7 +3,7 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav>
-  <micro-app name="app" url="http://localhost:3001/"></micro-app>
+  <micro-app name="app" url="http://localhost:3000/"></micro-app>
   <router-view />
 </template>
 

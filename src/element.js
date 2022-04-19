@@ -3,6 +3,8 @@
 // disconnectedCallback：当 custom element从文档DOM中删除时，被调用。
 // adoptedCallback：当 custom element被移动到新的文档时，被调用。
 // attributeChangedCallback: 当 custom element增加、删除、修改自身属性时，被调用。
+import CreateApp, { appInstanceMap } from './app'
+
 class MyElement extends HTMLElement {
 
   // 声明需要监听的属性名，只有这些属性变化时才会触发attributeChangedCallback
@@ -17,7 +19,16 @@ class MyElement extends HTMLElement {
 
   connectedCallback() {
     // 元素被插入到DOM时执行，此时去加载子应用的静态资源并渲染
-    console.log('micro-app is connected')
+    console.log('micro-app is connected', this.getAttribute)
+    // 创建微应用实例
+    const app = new CreateApp({
+      name: this.name,
+      url: this.url,
+      container: this,
+    })
+
+    // 记入缓存，用于后续功能
+    appInstanceMap.set(this.name, app);
   }
 
   disconnectedCallback () {
@@ -28,6 +39,11 @@ class MyElement extends HTMLElement {
   attributeChangedCallback (attrName, oldVal, newVal) {
     // 元素属性发生变化时执行，可以获取name、url等属性的值
     console.log(`attribute ${attrName}: ${newVal}`)
+    if (attrName === 'name' && !this.name && newVal) {
+      this.name = newVal
+    } else if (attrName === 'url' && !this.url && newVal) {
+      this.url = newVal
+    }
   }
 }
 
